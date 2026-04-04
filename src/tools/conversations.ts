@@ -11,7 +11,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { apiGet, formatError } from "../client.js";
+import { apiGet, formatError, validatePathSegment } from "../client.js";
 import type { ConversationDetail, ConversationListResponse } from "../types.js";
 
 export function registerConversationTools(server: McpServer): void {
@@ -40,7 +40,10 @@ Returns: List of conversations with ID, status, duration, and agent ID.`,
     async ({ limit, agent_id }) => {
       try {
         const params: Record<string, unknown> = { page_size: limit };
-        if (agent_id) params.agent_id = agent_id;
+        if (agent_id) {
+          validatePathSegment(agent_id, "agent_id");
+          params.agent_id = agent_id;
+        }
 
         const data = await apiGet<ConversationListResponse>("/v1/convai/conversations", params);
         const convos = data.conversations ?? [];
@@ -88,6 +91,7 @@ Returns: Formatted transcript + structured analysis data.`,
     },
     async ({ conversation_id }) => {
       try {
+        validatePathSegment(conversation_id, "conversation_id");
         const convo = await apiGet<ConversationDetail>(
           `/v1/convai/conversations/${conversation_id}`
         );

@@ -12,7 +12,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { apiGet, apiPost, apiDelete, formatError } from "../client.js";
+import { apiGet, apiPost, apiDelete, formatError, validatePathSegment } from "../client.js";
 import type { KnowledgeBaseDoc, KnowledgeBaseListResponse } from "../types.js";
 
 export function registerKnowledgeBaseTools(server: McpServer): void {
@@ -72,6 +72,7 @@ Returns: Document metadata plus the full extracted text content.`,
     },
     async ({ doc_id }) => {
       try {
+        validatePathSegment(doc_id, "doc_id");
         const doc = await apiGet<KnowledgeBaseDoc>(`/v1/convai/knowledge-base/${doc_id}`);
 
         // Strip HTML tags from extracted_inner_html to get readable plain text
@@ -197,6 +198,7 @@ Args:
     },
     async ({ doc_id }) => {
       try {
+        validatePathSegment(doc_id, "doc_id");
         await apiDelete(`/v1/convai/knowledge-base/${doc_id}`);
         return { content: [{ type: "text", text: `✅ Document ${doc_id} deleted.` }] };
       } catch (err) {

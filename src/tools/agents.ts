@@ -10,7 +10,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { apiGet, apiPatch, formatError } from "../client.js";
+import { apiGet, apiPatch, formatError, validatePathSegment } from "../client.js";
 import type {
   AgentDetail,
   AgentListResponse,
@@ -84,6 +84,7 @@ Returns: Full agent configuration as formatted text.`,
     },
     async ({ agent_id }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         const agent = await apiGet<AgentDetail>(`/v1/convai/agents/${agent_id}`);
         const cfg = agent.conversation_config;
         const agentCfg = cfg?.agent;
@@ -159,6 +160,7 @@ Args:
     },
     async ({ agent_id }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         const agent = await apiGet<AgentDetail>(`/v1/convai/agents/${agent_id}`);
         const prompt = agent.conversation_config?.agent?.prompt?.prompt ?? "";
         const text = prompt.length
@@ -198,6 +200,7 @@ Returns: Confirmation with the updated agent name.`,
     },
     async ({ agent_id, prompt, first_message }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         if (!prompt && !first_message) {
           return { content: [{ type: "text", text: "Error: Provide at least one of prompt or first_message." }] };
         }
@@ -260,6 +263,7 @@ Returns: Confirmation of what was changed.`,
     },
     async ({ agent_id, temperature, voice_id, stability, similarity_boost, language }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         const conversationConfig: Record<string, unknown> = {};
 
         if (temperature !== undefined) {
@@ -321,6 +325,7 @@ Returns: List of conversations with ID, status, duration, and timestamp.`,
     },
     async ({ agent_id, limit }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         const data = await apiGet<ConversationListResponse>(
           "/v1/convai/conversations",
           { agent_id, page_size: limit }
@@ -359,6 +364,7 @@ Args:
     },
     async ({ agent_id }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         const agent = await apiGet<AgentDetail>(`/v1/convai/agents/${agent_id}`);
         const webhook = agent.platform_settings?.webhook;
         const text = webhook?.url
@@ -392,6 +398,7 @@ Args:
     },
     async ({ agent_id, url }) => {
       try {
+        validatePathSegment(agent_id, "agent_id");
         await apiPatch(`/v1/convai/agents/${agent_id}`, {
           platform_settings: { webhook: { url: url || null } },
         });
