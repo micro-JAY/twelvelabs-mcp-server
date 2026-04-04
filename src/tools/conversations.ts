@@ -30,7 +30,9 @@ Args:
   - limit: Number of conversations to return (1–100, default 20)
   - agent_id: Optional — filter to a specific agent
 
-Returns: List of conversations with ID, status, duration, and agent ID.`,
+Returns: List of conversations with ID, status, duration, and agent ID.
+
+Tip: To filter by agent, either pass agent_id here or use twelvelabs_list_agent_conversations.`,
       inputSchema: z.object({
         limit: z.number().int().min(1).max(100).default(20).describe("Max results"),
         agent_id: z.string().optional().describe("Optional agent ID filter"),

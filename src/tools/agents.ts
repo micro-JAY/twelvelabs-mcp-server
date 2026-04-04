@@ -76,7 +76,10 @@ official ElevenLabs MCP connector does not expose:
 Args:
   - agent_id: The agent's ID string (get from twelvelabs_list_agents)
 
-Returns: Full agent configuration as formatted text.`,
+Returns: Full agent configuration as formatted text.
+
+Note: The system prompt is truncated to 500 chars in this view.
+If you need to read, review, or edit the full prompt text, use twelvelabs_get_agent_prompt instead.`,
       inputSchema: z.object({
         agent_id: z.string().min(1).describe("The agent ID — get from twelvelabs_list_agents"),
       }).strict(),
@@ -179,7 +182,9 @@ Args:
     "twelvelabs_update_agent_prompt",
     {
       title: "Update Agent System Prompt",
-      description: `Replace the system prompt and/or first message for an ElevenLabs agent.
+      description: `⚠️ This modifies a LIVE agent's configuration. Confirm with the user before calling.
+
+Replace the system prompt and/or first message for an ElevenLabs agent.
 
 This uses a PATCH request, so any fields you omit are left unchanged.
 Only touches prompt text and first_message — does not affect voice, LLM model,
@@ -237,7 +242,9 @@ Returns: Confirmation with the updated agent name.`,
     "twelvelabs_update_agent_settings",
     {
       title: "Update Agent Settings",
-      description: `Update voice, LLM, temperature, or language settings for an agent.
+      description: `⚠️ This modifies a LIVE agent's configuration. Confirm with the user before calling.
+
+Update voice, LLM, temperature, or language settings for an agent.
 
 All parameters are optional — only provide the ones you want to change.
 Omitted values are left unchanged (PATCH semantics).
@@ -316,7 +323,10 @@ Args:
   - agent_id: The agent ID
   - limit: Number of conversations to return (1–100, default 20)
 
-Returns: List of conversations with ID, status, duration, and timestamp.`,
+Returns: List of conversations with ID, status, duration, and timestamp.
+
+Tip: This is equivalent to twelvelabs_list_conversations with the agent_id filter.
+Use whichever is more convenient — they return the same data.`,
       inputSchema: z.object({
         agent_id: z.string().min(1).describe("The agent ID"),
         limit: z.number().int().min(1).max(100).default(20).describe("Max results (default 20)"),
@@ -381,7 +391,9 @@ Args:
     "twelvelabs_set_agent_webhook",
     {
       title: "Set Agent Webhook URL",
-      description: `Set or update the post-call webhook URL for an ElevenLabs agent.
+      description: `⚠️ This modifies a LIVE agent's webhook configuration. Confirm with the user before calling.
+
+Set or update the post-call webhook URL for an ElevenLabs agent.
 
 ElevenLabs will POST a payload to this URL after each conversation ends,
 containing the transcript and data collection results. Pass an empty string

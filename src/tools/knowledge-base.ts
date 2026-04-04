@@ -112,7 +112,11 @@ Args:
   - name: Display name for the document
   - text: The full text content to store
 
-Returns: The new document's ID and name.`,
+Returns: The new document's ID and name.
+
+Note: This creates the document in your account-level knowledge base but does NOT
+automatically attach it to any agent. Use twelvelabs_get_agent to check an agent's
+current KB attachments.`,
       inputSchema: z.object({
         name: z.string().min(1).max(200).describe("Display name for the document"),
         text: z.string().min(1).max(500_000).describe("The full text content (max 500K chars)"),
@@ -153,7 +157,11 @@ Args:
   - name: Display name for the document
   - url: The URL to crawl
 
-Returns: The new document's ID.`,
+Returns: The new document's ID.
+
+Note: This creates the document in your account-level knowledge base but does NOT
+automatically attach it to any agent. Use twelvelabs_get_agent to check an agent's
+current KB attachments.`,
       inputSchema: z.object({
         name: z.string().min(1).max(200).describe("Display name for the document"),
         url: z.string().url().max(2_000).refine(val => val.startsWith("https://"), { message: "URL must use HTTPS" }).describe("The URL to crawl (HTTPS required)"),
@@ -184,10 +192,9 @@ Returns: The new document's ID.`,
     "twelvelabs_delete_kb_doc",
     {
       title: "Delete Knowledge Base Document",
-      description: `Permanently delete a knowledge base document.
+      description: `⚠️ IRREVERSIBLE. Permanently deletes a knowledge base document. Confirm with the user before calling.
 
-WARNING: This is irreversible. The document will also be detached from any
-agents that reference it.
+The document will also be detached from any agents that reference it.
 
 Args:
   - doc_id: The document ID to delete`,
