@@ -115,7 +115,7 @@ Args:
 Returns: The new document's ID and name.`,
       inputSchema: z.object({
         name: z.string().min(1).max(200).describe("Display name for the document"),
-        text: z.string().min(1).describe("The full text content"),
+        text: z.string().min(1).max(500_000).describe("The full text content (max 500K chars)"),
       }).strict(),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
     },
@@ -156,7 +156,7 @@ Args:
 Returns: The new document's ID.`,
       inputSchema: z.object({
         name: z.string().min(1).max(200).describe("Display name for the document"),
-        url: z.string().url().describe("The URL to crawl"),
+        url: z.string().url().max(2_000).refine(val => val.startsWith("https://"), { message: "URL must use HTTPS" }).describe("The URL to crawl (HTTPS required)"),
       }).strict(),
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
     },

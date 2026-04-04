@@ -193,10 +193,10 @@ Args:
 Returns: Confirmation with the updated agent name.`,
       inputSchema: z.object({
         agent_id: z.string().min(1).describe("The agent ID"),
-        prompt: z.string().optional().describe("New system prompt text"),
-        first_message: z.string().optional().describe("New first message the agent speaks"),
+        prompt: z.string().max(100_000).optional().describe("New system prompt text (max 100K chars)"),
+        first_message: z.string().max(5_000).optional().describe("New first message (max 5K chars)"),
       }).strict(),
-      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false },
     },
     async ({ agent_id, prompt, first_message }) => {
       try {
@@ -259,7 +259,7 @@ Returns: Confirmation of what was changed.`,
         similarity_boost: z.number().min(0).max(1).optional().describe("TTS similarity boost 0-1"),
         language: z.string().optional().describe("Language code, e.g. 'en' or 'ja'"),
       }).strict(),
-      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false },
     },
     async ({ agent_id, temperature, voice_id, stability, similarity_boost, language }) => {
       try {
@@ -392,9 +392,12 @@ Args:
   - url: The webhook URL (empty string to remove)`,
       inputSchema: z.object({
         agent_id: z.string().min(1),
-        url: z.string().describe("Webhook URL, or empty string to remove"),
+        url: z.string().max(2_000).refine(
+          (val) => val === "" || /^https:\/\/.+/.test(val),
+          { message: "Webhook URL must use HTTPS (or be empty to remove)" }
+        ).describe("Webhook URL (HTTPS required), or empty string to remove"),
       }).strict(),
-      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false },
     },
     async ({ agent_id, url }) => {
       try {
