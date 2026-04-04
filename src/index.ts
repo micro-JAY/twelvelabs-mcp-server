@@ -80,7 +80,26 @@ async function main() {
 
   // stderr is safe — it goes to the host's log, not the protocol stream
   console.error("[twelvelabs-mcp] Server running via stdio — ready for tool calls.");
+
+  // Graceful shutdown — clean up MCP connection on process signals
+  const shutdown = async () => {
+    console.error("[twelvelabs-mcp] Shutting down...");
+    try {
+      await server.close();
+    } catch {
+      // Ignore close errors during shutdown
+    }
+    process.exit(0);
+  };
+
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
 }
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[twelvelabs-mcp] Unhandled rejection:", reason);
+  // Don't exit — let the MCP protocol handle it
+});
 
 main().catch((err) => {
   console.error("[twelvelabs-mcp] Fatal startup error:", err);
