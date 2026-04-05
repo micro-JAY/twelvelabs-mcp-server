@@ -1,5 +1,7 @@
 # TwelveLabs MCP Server
 
+> **This project is not affiliated with TwelveLabs (the video understanding platform).** It is an MCP server for the **[ElevenLabs](https://elevenlabs.io) Conversational AI API** — voice agents, knowledge bases, conversations, and TTS. The name "TwelveLabs" is the project codename only.
+
 An enhanced MCP (Model Context Protocol) server that gives Claude direct access to
 the ElevenLabs Conversational AI API -- including capabilities the official
 ElevenLabs MCP connector doesn't expose.

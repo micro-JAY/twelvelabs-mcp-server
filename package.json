@@ -1,8 +1,8 @@
 {
   "name": "twelvelabs-mcp-server",
   "mcpName": "io.github.micro-JAY/twelvelabs-mcp-server",
-  "version": "1.0.0",
-  "description": "TwelveLabs — an enhanced MCP server for the ElevenLabs Conversational AI API (agents, knowledge base, conversations, voices)",
+  "version": "1.0.1",
+  "description": "MCP server for ElevenLabs Conversational AI API (not affiliated with TwelveLabs video platform) — agents, knowledge base, conversations, voices",
   "type": "module",
   "main": "dist/index.js",
   "license": "MIT",
