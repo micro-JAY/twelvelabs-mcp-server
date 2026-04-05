@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.micro-JAY/twelvelabs-mcp-server",
+  "description": "MCP server for ElevenLabs Conversational AI — manage agents, knowledge base, conversations, voices",
+  "repository": {
+    "url": "https://github.com/micro-JAY/twelvelabs-mcp-server",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "twelvelabs-mcp-server",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Your ElevenLabs API key",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "ELEVENLABS_API_KEY"
+        }
+      ]
+    }
+  ]
+}
