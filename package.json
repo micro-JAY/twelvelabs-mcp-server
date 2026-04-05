@@ -1,5 +1,6 @@
 {
   "name": "twelvelabs-mcp-server",
+  "mcpName": "io.github.micro-JAY/twelvelabs-mcp-server",
   "version": "1.0.0",
   "description": "TwelveLabs — an enhanced MCP server for the ElevenLabs Conversational AI API (agents, knowledge base, conversations, voices)",
   "type": "module",
