@@ -1,12 +1,16 @@
 {
   "name": "twelvelabs-mcp-server",
   "mcpName": "io.github.micro-JAY/twelvelabs-mcp-server",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "MCP server for ElevenLabs Conversational AI API (not affiliated with TwelveLabs video platform) — agents, knowledge base, conversations, voices",
   "type": "module",
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Tonari Labs",
+  "homepage": "https://github.com/micro-JAY/twelvelabs-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/micro-JAY/twelvelabs-mcp-server/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/micro-JAY/twelvelabs-mcp-server"
@@ -35,9 +39,12 @@
   "engines": {
     "node": ">=18"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.6.1",
-    "axios": "^1.7.9",
     "zod": "^3.23.8"
   },
   "devDependencies": {
