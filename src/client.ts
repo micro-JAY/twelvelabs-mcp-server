@@ -84,7 +84,14 @@ async function request<T>(method: string, path: string, opts: RequestOptions = {
   if (opts.params) {
     const usp = new URLSearchParams();
     for (const [k, v] of Object.entries(opts.params)) {
-      if (v !== undefined && v !== null) usp.append(k, String(v));
+      if (v === undefined || v === null) continue;
+      // ElevenLabs models list filters as repeated query parameters. Joining an
+      // array would turn multiple IDs into one invalid value.
+      if (Array.isArray(v)) {
+        for (const item of v) usp.append(k, String(item));
+      } else {
+        usp.append(k, String(v));
+      }
     }
     const qs = usp.toString();
     if (qs) url += `?${qs}`;

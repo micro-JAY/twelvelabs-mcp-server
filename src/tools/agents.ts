@@ -94,6 +94,7 @@ If you need to read, review, or edit the full prompt text, use twelvelabs_get_ag
         const promptCfg = agentCfg?.prompt;
         const tts = cfg?.tts;
         const webhook = agent.platform_settings?.webhook;
+        const fileInput = cfg?.file_input;
 
         // Truncate prompt for display — full prompt can be many KB
         const promptText = promptCfg?.prompt ?? "";
@@ -121,6 +122,11 @@ If you need to read, review, or edit the full prompt text, use twelvelabs_get_ag
           ``,
           `## Language`,
           `${agentCfg?.language ?? "not set"}`,
+          ``,
+          `## Conversation Capabilities`,
+          `File uploads: ${fileInput?.enabled ? "enabled" : "disabled"}`,
+          `Max files per conversation: ${fileInput?.max_files_per_conversation ?? "not set"}`,
+          `Max duration message: ${agentCfg?.max_conversation_duration_message ?? "not set"}`,
           ``,
           `## First Message`,
           agentCfg?.first_message ?? "(not set)",
@@ -302,6 +308,72 @@ Returns: Confirmation of what was changed.`,
         if (language !== undefined) changed.push(`language → ${language}`);
 
         return { content: [{ type: "text", text: `✅ Updated: ${changed.join(", ")} for agent ${agent_id}.` }] };
+      } catch (err) {
+        return { content: [{ type: "text", text: formatError(err) }] };
+      }
+    }
+  );
+
+  // ── Update Conversation Capabilities ───────────────────────────────────────
+
+  server.registerTool(
+    "twelvelabs_update_agent_conversation_capabilities",
+    {
+      title: "Update Agent Conversation Capabilities",
+      description: `⚠️ This modifies a LIVE agent's configuration. Confirm with the user before calling.
+
+Enable or disable file uploads for chat conversations and set the message an
+agent sends when its maximum conversation duration is reached. File uploads
+support images and PDFs only when the selected LLM accepts multimodal input.
+Omitted fields remain unchanged.
+
+Args:
+  - agent_id: The agent ID
+  - file_uploads_enabled: Enable or disable end-user image/PDF uploads
+  - max_files_per_conversation: Limit uploads to 1–10 files per conversation
+  - max_conversation_duration_message: Message sent when the session reaches its configured time limit
+
+Returns: Confirmation of the values changed.`,
+      inputSchema: z.object({
+        agent_id: z.string().min(1).describe("The agent ID"),
+        file_uploads_enabled: z.boolean().optional().describe("Enable image/PDF uploads in chat"),
+        max_files_per_conversation: z.number().int().min(1).max(10).optional().describe("Maximum uploads per conversation"),
+        max_conversation_duration_message: z.string().max(5_000).optional().describe("Message sent at the configured maximum duration"),
+      }).strict(),
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false },
+    },
+    async ({ agent_id, file_uploads_enabled, max_files_per_conversation, max_conversation_duration_message }) => {
+      try {
+        validatePathSegment(agent_id, "agent_id");
+        if (
+          file_uploads_enabled === undefined &&
+          max_files_per_conversation === undefined &&
+          max_conversation_duration_message === undefined
+        ) {
+          return { content: [{ type: "text", text: "Error: Provide at least one capability to update." }] };
+        }
+        if (max_files_per_conversation !== undefined && file_uploads_enabled === false) {
+          return { content: [{ type: "text", text: "Error: max_files_per_conversation cannot be set while file uploads are disabled." }] };
+        }
+
+        const conversationConfig: Record<string, unknown> = {};
+        if (file_uploads_enabled !== undefined || max_files_per_conversation !== undefined) {
+          conversationConfig.file_input = {
+            ...(file_uploads_enabled !== undefined ? { enabled: file_uploads_enabled } : {}),
+            ...(max_files_per_conversation !== undefined ? { max_files_per_conversation } : {}),
+          };
+        }
+        if (max_conversation_duration_message !== undefined) {
+          conversationConfig.agent = { max_conversation_duration_message };
+        }
+
+        await apiPatch(`/v1/convai/agents/${agent_id}`, { conversation_config: conversationConfig });
+
+        const changed: string[] = [];
+        if (file_uploads_enabled !== undefined) changed.push(`file uploads → ${file_uploads_enabled ? "enabled" : "disabled"}`);
+        if (max_files_per_conversation !== undefined) changed.push(`max files → ${max_files_per_conversation}`);
+        if (max_conversation_duration_message !== undefined) changed.push("maximum duration message");
+        return { content: [{ type: "text", text: `✅ Updated ${changed.join(", ")} for agent ${agent_id}.` }] };
       } catch (err) {
         return { content: [{ type: "text", text: formatError(err) }] };
       }

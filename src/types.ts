@@ -43,6 +43,12 @@ export interface AgentConfig {
   readonly first_message?: string;
   readonly prompt: AgentPromptConfig;
   readonly language?: string;
+  readonly max_conversation_duration_message?: string;
+}
+
+export interface FileInputConfig {
+  readonly enabled?: boolean;
+  readonly max_files_per_conversation?: number;
 }
 
 export interface TtsConfig {
@@ -55,6 +61,7 @@ export interface TtsConfig {
 export interface ConversationConfig {
   readonly agent?: AgentConfig;
   readonly tts?: TtsConfig;
+  readonly file_input?: FileInputConfig;
 }
 
 export interface WebhookConfig {
@@ -101,7 +108,21 @@ export interface ConversationSummary {
   readonly status: string;
   readonly start_time_unix_secs?: number;
   readonly call_duration_secs?: number;
+  readonly agent_name?: string | null;
+  readonly call_successful?: "success" | "failure" | "unknown";
+  readonly call_success_score?: number;
+  readonly transcript_summary?: string;
+  readonly call_summary_title?: string;
+  readonly termination_reason?: string;
+  readonly tag_ids?: string[];
+  readonly sentiment_analysis?: ConversationSentiment;
   readonly metadata?: Record<string, unknown>;
+}
+
+export interface ConversationSentiment {
+  readonly overall_label?: "positive" | "neutral" | "negative";
+  readonly overall_sentiment_score?: number;
+  readonly overall_frustration_score?: number;
 }
 
 export interface ConversationListResponse {
@@ -114,6 +135,12 @@ export interface TranscriptMessage {
   readonly role: "agent" | "user";
   readonly message: string;
   readonly time_in_call_secs?: number;
+  readonly ignored_as_backchannel?: boolean;
+  readonly user_identifier?: string;
+  readonly contextual_update_info?: {
+    readonly context_id?: string;
+    readonly is_superseded?: boolean;
+  };
 }
 
 export interface DataCollectionResult {
@@ -127,7 +154,20 @@ export interface EvaluationCriteriaResult {
 export interface ConversationAnalysis {
   readonly data_collection?: DataCollectionResult;
   readonly evaluation_criteria?: EvaluationCriteriaResult;
+  readonly data_collection_results?: Record<string, ConversationAnalysisResult>;
+  readonly evaluation_criteria_results?: Record<string, ConversationAnalysisResult>;
   readonly call_successful?: string;
+  readonly call_success_score?: number;
+  readonly transcript_summary?: string;
+  readonly call_summary_title?: string;
+}
+
+export interface ConversationAnalysisResult {
+  readonly criteria_id?: string;
+  readonly data_collection_id?: string;
+  readonly result?: string;
+  readonly value?: string | number | boolean | null | Record<string, unknown>;
+  readonly rationale?: string;
 }
 
 export interface ConversationDetail {
@@ -136,6 +176,15 @@ export interface ConversationDetail {
   readonly status: string;
   readonly start_time_unix_secs?: number;
   readonly call_duration_secs?: number;
+  readonly agent_name?: string | null;
+  readonly branch_id?: string | null;
+  readonly version_id?: string | null;
+  readonly environment?: string;
+  readonly has_audio?: boolean;
+  readonly has_user_audio?: boolean;
+  readonly has_response_audio?: boolean;
+  readonly has_auxiliary_audio?: boolean;
+  readonly tag_ids?: string[];
   readonly transcript?: TranscriptMessage[];
   readonly analysis?: ConversationAnalysis;
   readonly metadata?: Record<string, unknown>;
