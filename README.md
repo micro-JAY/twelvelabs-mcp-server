@@ -2,9 +2,9 @@
 
 > **This project is not affiliated with TwelveLabs (the video understanding platform).** It is an MCP server for the **[ElevenLabs](https://elevenlabs.io) Conversational AI API** — voice agents, knowledge bases, conversations, and TTS. The name "TwelveLabs" is the project codename only.
 
-An enhanced MCP (Model Context Protocol) server that gives Claude direct access to
-the ElevenLabs Conversational AI API -- including capabilities the official
-ElevenLabs MCP connector doesn't expose.
+An enhanced MCP (Model Context Protocol) server that gives any compatible MCP
+client direct access to the ElevenLabs Conversational AI API -- including
+capabilities the official ElevenLabs MCP connector doesn't expose.
 
 ## What this covers
 
@@ -35,9 +35,11 @@ npm install --include=dev
 npm run build
 ```
 
-### Add to Claude Desktop
+### Connect an MCP client
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add an equivalent server entry to your MCP client's configuration. The config
+file location and surrounding syntax vary by client; this is the standard stdio
+server definition:
 
 ```json
 {
@@ -53,16 +55,23 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-Then restart Claude Desktop. You should see "twelvelabs" in the available tools panel.
+Restart or reconnect your MCP client. You should see `twelvelabs` in its
+available tools list.
 
 ### Use it
 
-In any Claude conversation:
+Ask your MCP-enabled assistant to use the tools, for example:
 
 > "List my agents"
 > "Get the full config for agent_1001kjbh14xce5kbreh55ydf4rae"
 > "Show me the last 10 conversations for that agent"
 > "Get the transcript and analysis for conversation_xyz"
+
+### Compatibility
+
+This server works with MCP clients that support the **stdio** transport and let
+you configure environment variables for a local server process. Clients that
+only support remote HTTP MCP servers need a compatible stdio bridge or proxy.
 
 ## Tool Reference
 
