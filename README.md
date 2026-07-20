@@ -8,9 +8,9 @@ ElevenLabs MCP connector doesn't expose.
 
 ## What this covers
 
-- **Agents** -- list, get full config (including LLM model + temperature), update prompt/settings, manage webhooks
+- **Agents** -- list, get full config (including LLM model + temperature), update prompt/settings, manage webhooks and file uploads
 - **Knowledge Base** -- list, read full content, add text/URL docs, delete docs
-- **Conversations** -- list, get full transcript + data_collection analysis
+- **Conversations** -- filter and tag history, inspect transcripts, and rerun post-call analysis/evaluations
 - **Voices** -- list and search available voices
 
 ## Prerequisites
@@ -74,6 +74,7 @@ In any Claude conversation:
 | `twelvelabs_get_agent_prompt` | Full untruncated system prompt text |
 | `twelvelabs_update_agent_prompt` | Replace system prompt and/or first message |
 | `twelvelabs_update_agent_settings` | Change temperature, voice, TTS settings, language |
+| `twelvelabs_update_agent_conversation_capabilities` | Enable chat file uploads and set the maximum-duration message |
 | `twelvelabs_list_agent_conversations` | Recent conversations for one agent |
 | `twelvelabs_get_agent_webhook` | Current webhook URL |
 | `twelvelabs_set_agent_webhook` | Set or remove webhook URL |
@@ -90,8 +91,16 @@ In any Claude conversation:
 ### Conversation Tools
 | Tool | What it does |
 |------|-------------|
-| `twelvelabs_list_conversations` | Recent conversations (optionally filtered by agent) |
-| `twelvelabs_get_conversation` | Full transcript + data_collection + evaluation_criteria |
+| `twelvelabs_list_conversations` | Filter history by agent, time, success, duration, rating, status, and tags |
+| `twelvelabs_get_conversation` | Full transcript, audio/tag metadata, data collection, and evaluation results |
+| `twelvelabs_rerun_conversation_analysis` | Reanalyse a completed conversation using current agent settings |
+| `twelvelabs_rerun_conversation_evaluation` | Rerun a single evaluation criterion for a completed conversation |
+| `twelvelabs_list_conversation_tags` | List workspace conversation tags |
+| `twelvelabs_create_conversation_tag` | Create a workspace conversation tag |
+| `twelvelabs_update_conversation_tag` | Rename a tag or change its description |
+| `twelvelabs_assign_conversation_tags` | Apply one or more tags to a conversation |
+| `twelvelabs_remove_conversation_tag` | Remove a tag from a conversation |
+| `twelvelabs_delete_conversation_tag` | Permanently delete a workspace conversation tag |
 
 ### Voice Tools
 | Tool | What it does |

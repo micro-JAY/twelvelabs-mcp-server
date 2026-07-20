@@ -1,7 +1,7 @@
 {
   "name": "twelvelabs-mcp-server",
   "mcpName": "io.github.micro-JAY/twelvelabs-mcp-server",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP server for ElevenLabs Conversational AI API (not affiliated with TwelveLabs video platform) — agents, knowledge base, conversations, voices",
   "type": "module",
   "main": "dist/index.js",
@@ -44,12 +44,19 @@
     "provenance": true
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.6.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.23.8"
+  },
+  "overrides": {
+    "fast-uri": "4.1.1",
+    "hono": "4.12.31",
+    "express-rate-limit": "8.6.0",
+    "ip-address": "10.2.0",
+    "qs": "6.15.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.1",
     "typescript": "^5.9.3"
   }
 }
